@@ -25,7 +25,7 @@ def run_python_file(working_directory: str, file_path: str, args=[]):
             text=True,
         )
 
-        if (completed.stdout or completed.stderr) is None:
+        if completed.stdout is None or completed.stderr is None:
             stdout_text = ""
             stderr_text = ""
         else:
@@ -64,3 +64,70 @@ parameters=types.Schema(
     },
 ),
 )
+# import os
+# import sys
+
+# # Add parent directory to path to find secure_python_runner
+# parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# if parent_dir not in sys.path:
+#     sys.path.insert(0, parent_dir)
+
+# from secure_python_runner import SecurePythonRunner
+# from google.genai import types
+
+# def run_python_file(working_directory: str, file_path: str, args: list = None) -> str:
+#     """Agent-facing function"""
+#     runner = SecurePythonRunner(working_directory=working_directory)
+#     result = runner.run(file_path, args or [])
+    
+#     if result.error:
+#         return f"❌ Error: {result.error}"
+    
+#     output = []
+    
+#     if result.stdout:
+#         output.append(f"📤 Output:\n{result.stdout}")
+    
+#     if result.stderr:
+#         output.append(f"⚠️  Errors:\n{result.stderr}")
+    
+#     # Status info
+#     status = "✅ Success" if result.success else "❌ Failed"
+#     output.append(f"{status} (exit code: {result.returncode}, time: {result.execution_time:.2f}s)")
+    
+#     return "\n\n".join(output)
+
+# # Schema
+# schema_run_python_file = types.FunctionDeclaration(
+#     name="run_python_file",
+#     description=(
+#         "Executes a Python file in a secure sandbox with resource limits. "
+#         "Maximum execution time: 30 seconds. "
+#         "Maximum memory: 256MB. "
+#         "Captures stdout and stderr. "
+#         "Only works with .py files in the working directory."
+#     ),
+#     parameters=types.Schema(
+#         type=types.Type.OBJECT,
+#         properties={
+#             "file_path": types.Schema(
+#                 type=types.Type.STRING,
+#                 description=(
+#                     "Path to Python file relative to working directory. "
+#                     "Examples: 'main.py', 'tests/test_calculator.py'. "
+#                     "Must be a .py file. No absolute paths or '..' allowed."
+#                 ),
+#             ),
+#             "args": types.Schema(
+#                 type=types.Type.ARRAY,
+#                 description=(
+#                     "Optional command-line arguments passed to the script. "
+#                     "Each argument is a separate string. "
+#                     "Example: ['--verbose', 'input.txt']"
+#                 ),
+#                 items=types.Schema(type=types.Type.STRING),
+#             ),
+#         },
+#         required=["file_path"],
+#     ),
+# )
